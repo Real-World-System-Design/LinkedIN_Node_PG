@@ -1,4 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Institute } from "./institute.entity";
+import { Organization } from "./organization.entity";
+import { Skill } from "./skills.entity";
 
 @Entity('users')
 export class User {
@@ -17,9 +20,15 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date
 
-    constructor(email: string, username: string, password: string) {
-        this.username = username
-        this.password = password
-        this.email = email
-    }
+    @ManyToMany(() => Skill)
+    @JoinTable()
+    skills: Skill[]
+
+    @ManyToMany(() => Organization)
+    @JoinTable()
+    organizations: Organization[]
+
+    @ManyToMany(() => Institute)
+    @JoinTable()
+    institutes: Institute[]
 }
