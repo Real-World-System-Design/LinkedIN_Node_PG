@@ -5,6 +5,7 @@ import { getRepository, Repository } from 'typeorm';
 import { createUserDto } from './dto/registerUser.dto';
 import { sanitization } from 'src/utils/security';
 import { hashPass } from 'src/utils/password';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -32,7 +33,14 @@ export class UserService {
         newUSer.email = email;
         newUSer.password = await hashPass(password);
         //TODO: validate the error of the user using class-validators
-        const savedUser = await this.userRepo.save(newUSer);
-        return sanitization(savedUser);
+        const erros = await validate(newUSer);
+        if(erros.length > 0) {
+            const _errors = {username: 'UserInput is not valid'};
+            throw new HttpException({message: `Input data validation failed`, _errors}, HttpStatus.BAD_REQUEST);
+        }else{
+
+            const savedUser = await this.userRepo.save(newUSer);
+            return sanitization(savedUser);
+        }
     }
  }
