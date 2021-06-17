@@ -14,6 +14,8 @@ export class User {
     @Column({type: 'text', nullable: true})
     password?: string
 
+    token: string
+
     @CreateDateColumn()
     createdAt: Date
 

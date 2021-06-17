@@ -4,8 +4,10 @@ import { User } from '../../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { createUserDto } from './dto/registerUser.dto';
 import { sanitization } from 'src/utils/security';
-import { hashPass } from 'src/utils/password';
-import { validate } from 'class-validator';
+import { hashPass, passMatch } from 'src/utils/password';
+import { isEmail, validate } from 'class-validator';
+import { loginUserDto } from './dto/loginUser.dto';
+import { sign } from 'src/utils/jwt.util';
 
 @Injectable()
 export class UserService {
@@ -32,15 +34,28 @@ export class UserService {
         newUSer.username = username;
         newUSer.email = email;
         newUSer.password = await hashPass(password);
-        //TODO: validate the error of the user using class-validators
+
         const erros = await validate(newUSer);
         if(erros.length > 0) {
             const _errors = {username: 'UserInput is not valid'};
             throw new HttpException({message: `Input data validation failed`, _errors}, HttpStatus.BAD_REQUEST);
         }else{
-
             const savedUser = await this.userRepo.save(newUSer);
             return sanitization(savedUser);
         }
     }
- }
+    async loginUser(data: loginUserDto): Promise<User> {
+        const {email, password} = data;
+        // const user = await this.userRepo.findOne(email);
+        const repo = getRepository(User);
+        const user = await repo.findOne(email);
+        if(!user) throw new HttpException({message: `No user with this email ${email} exists`}, HttpStatus.UNPROCESSABLE_ENTITY);
+    
+        //MATCH THE PASSWORD
+        const matchPass = await passMatch(password, user.password);
+        if(!matchPass) throw new HttpException({message: `wrong password`}, HttpStatus.UNPROCESSABLE_ENTITY);
+    
+        user.token = await sign(user);
+        return sanitization(user);
+    }
+}

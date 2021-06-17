@@ -20,9 +20,6 @@ export class Article {
 
     @Column({default:0})
     favoritesCount?: number
-
-    @Column({type: 'text'})
-    name?: string
    
     @CreateDateColumn()
     createdAt: Date

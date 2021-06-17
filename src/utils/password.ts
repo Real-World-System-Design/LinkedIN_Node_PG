@@ -10,7 +10,7 @@ export async function hashPass(password: string): Promise<string> {
     });
 }
 
-export async function compare(password: string, hash: string): Promise<boolean> {
+export async function passMatch(password: string, hash: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
         bcrypt.compare(password, hash, (err, result) => {
             if(err) throw reject(err)
