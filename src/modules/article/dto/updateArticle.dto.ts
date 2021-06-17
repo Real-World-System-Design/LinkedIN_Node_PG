@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty } from "class-validator";
 
-export class ArticleData{
+export class UpdateArticle{
     @IsNotEmpty()
     readonly title: string
     

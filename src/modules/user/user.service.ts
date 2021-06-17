@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entities/user.entity';
 import { getRepository, Repository } from 'typeorm';
 import { createUserDto } from './dto/registerUser.dto';
-import { sanitization } from 'src/utils/security';
-import { hashPass, passMatch } from 'src/utils/password';
-import { isEmail, validate } from 'class-validator';
+import { sanitization } from '../../utils/security';
+import { hashPass, passMatch } from '../../utils/password';
+import { validate } from 'class-validator';
 import { loginUserDto } from './dto/loginUser.dto';
-import { sign } from 'src/utils/jwt.util';
+import { sign } from '../../utils/jwt.util';
 
 @Injectable()
 export class UserService {

@@ -14,3 +14,15 @@ export function createTypeOrmProdConfig(): TypeOrmModuleOptions {
     logger: 'advanced-console',
   };
 }
+
+export function createTypeOrmTestConfig(): TypeOrmModuleOptions {
+  return{
+    type: 'sqlite',
+    database: ':memory:',
+    synchronize: true,
+    entities: ['src/entities/*.entity.ts'],
+    dropSchema: true,
+    logging: true,
+    logger: 'advanced-console'
+  }
+}
