@@ -13,12 +13,23 @@ import { UpdateArticle } from './dto/updateArticle.dto';
 export class ArticleService {
     constructor(
         @InjectRepository(Article) private readonly articleRepo: Repository<Article>,
-        @InjectRepository(User) private readonly userRepo: Repository<User>
+        @InjectRepository(User) private readonly userRepo: Repository<User>,
     ){}
 
     async getAllArticles(): Promise<Article[]>{
         return await this.articleRepo.find();
     }
+    async getArticleBySlug(slug: string): Promise<Article> {        
+        const requestedArticle = await this.articleRepo.findOne(slug);
+        if(!requestedArticle) throw new HttpException("Article with this given slug not exists", HttpStatus.NOT_FOUND);
+    
+        return requestedArticle;
+    }
+    //TODO: Implemet find article by feed
+    //TODO: convert the primary key to a uuid or a oneauth id 
+    // async findArticleByFeed(userId: number):Promise<Article> {
+
+    // }
     async createArticle(data: ArticleData, email: string): Promise<Article> {
         const {title, body, description, tagList} = data;
         const user = await this.userRepo.findOne(email);
@@ -62,5 +73,13 @@ export class ArticleService {
             const updatedArticle= await this.articleRepo.save(article);
             return updatedArticle;
         }
+    }
+    async deleteArticle(slug: string, email: string) {
+        const user = await this.userRepo.findOne(email);
+        if(!user) throw new HttpException("User with this email not found", HttpStatus.NOT_FOUND);
+        
+        const requestedArticle = await this.articleRepo.findOne(slug);
+        if(!requestedArticle) throw new HttpException("Article with this given slug not exists", HttpStatus.NOT_FOUND);
+        return await this.articleRepo.delete(requestedArticle);    
     } 
 }

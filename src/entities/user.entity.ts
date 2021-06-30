@@ -1,10 +1,16 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Institute } from "./institute.entity";
 import { Organization } from "./organization.entity";
 import { Skill } from "./skills.entity";
 
 @Entity('users')
 export class User {
+    // @PrimaryGeneratedColumn()
+    // id: number
+
+    // @Column({type: 'text', nullable: false})
+    // email: string
+
     @PrimaryColumn()
     email: string
 

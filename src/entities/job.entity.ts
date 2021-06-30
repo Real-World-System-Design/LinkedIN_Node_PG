@@ -11,7 +11,10 @@ export class Job {
     
     @Column({type: 'text', nullable: false})
     description: string
-    
+
+    @Column({type: 'text'})
+    jobType: string
+
     @ManyToOne(() => User)
     author: User
     
